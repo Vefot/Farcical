@@ -19,4 +19,4 @@ bin/
 vendor/
 
 # Other
-z_complete
+*z_complete*
