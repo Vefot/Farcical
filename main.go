@@ -12,7 +12,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%s -- Farcical Shell\n", user.Username)
+	fmt.Printf(` ______ 
+|  ____|
+| |__   
+|  __|  
+| |     
+|_| 
+`)
+	fmt.Printf("\nFarcical Shell: %s\n", user.Username)
 	fmt.Printf("Enter your command\n")
 	repl.Start(os.Stdin, os.Stdout)
 }
