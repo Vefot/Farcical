@@ -160,13 +160,24 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	expression := &ast.InfixExpression{
-		Token: p.curToken,
+		Token:    p.curToken,
 		Operator: p.curToken.Literal,
-		Left: left,
+		Left:     left,
 	}
 
 	precedence := p.curPrecedence()
 	p.nextToken()
+
+	// this below change (make sure to comment out the other expression.Right line if you uncomment this)
+	// will change "+" operators to be right associative
+	// this means that "a + b + c" turns from "(a + b) + c" to "a + (b + c)"
+	// we don't want this...for now
+	// if expression.Operator == "+" {
+	// 	expression.Right = p.parseExpression(precedence - 1)
+	// } else {
+	// 	expression.Right = p.parseExpression(precedence)
+	// }
+
 	expression.Right = p.parseExpression(precedence)
 
 	return expression
