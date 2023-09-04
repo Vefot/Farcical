@@ -7,8 +7,9 @@ import (
 
 // there is no point making new instance of object.Boolean every time a boolean is created
 // there is no difference between 2 trues/falses
-// therefore reference the values instead of creating new ones
+// therefore reference the values instead of creating new ones - same for NULL
 var (
+	NULL  = &object.Null{}
 	TRUE  = &object.Boolean{Value: true}
 	FALSE = &object.Boolean{Value: false}
 )
