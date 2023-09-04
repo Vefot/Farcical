@@ -5,6 +5,14 @@ import (
 	"farcical/object"
 )
 
+// there is no point making new instance of object.Boolean every time a boolean is created
+// there is no difference between 2 trues/falses
+// therefore reference the values instead of creating new ones
+var (
+	TRUE  = &object.Boolean{Value: true}
+	FALSE = &object.Boolean{Value: false}
+)
+
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
@@ -13,9 +21,18 @@ func Eval(node ast.Node) object.Object {
 		return Eval(node.Expression)
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}
+	case *ast.Boolean:
+		return nativeBoolToBooleanObject(node.Value)
 	}
 
 	return nil
+}
+
+func nativeBoolToBooleanObject(input bool) *object.Boolean {
+	if input {
+		return TRUE
+	}
+	return FALSE
 }
 
 func evalStatements(stmts []ast.Statement) object.Object {
