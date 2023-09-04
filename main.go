@@ -17,9 +17,10 @@ func main() {
 | |__   
 |  __|  
 | |     
-|_| 
+|_|
 `)
-	fmt.Printf("\nFarcical Shell: %s\n", user.Username)
+	fmt.Printf("\nFarcical v0.0.0")
+	fmt.Printf("\nShell: %s\n", user.Username)
 	fmt.Printf("Enter your command\n")
 	repl.Start(os.Stdin, os.Stdout)
 }
