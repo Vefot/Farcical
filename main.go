@@ -20,7 +20,6 @@ func main() {
 |_|
 `)
 	fmt.Printf("\nFarcical v0.0.0")
-	fmt.Printf("\nShell: %s\n", user.Username)
-	fmt.Printf("Enter your command\n")
+	fmt.Printf("\nREPL Session: %s\n", user.Username)
 	repl.Start(os.Stdin, os.Stdout)
 }
