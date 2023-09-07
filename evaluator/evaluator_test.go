@@ -4,6 +4,7 @@ import (
 	"farcical/lexer"
 	"farcical/object"
 	"farcical/parser"
+	"fmt"
 	"testing"
 )
 
@@ -132,8 +133,9 @@ func TestReturnStatements(t *testing.T) {
 		`, 10,
 		},
 	}
-
+	fmt.Println("--------------------------------------------------------")
 	for _, tt := range tests {
+		fmt.Println("++++++")
 		evaluated := testEval(tt.input)
 		testIntegerObject(t, evaluated, tt.expected)
 	}
