@@ -49,3 +49,23 @@ type ReturnValue struct {
 
 func (rv *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
 func (rv *ReturnValue) Inspect() string  { return rv.Value.Inspect() }
+
+func NewEnvironment() *Environment {
+	s := make(map[string]Object)
+	return &Environment{store: s}
+}
+
+// an environment is just a map of variable names to their values (the object representation of their values)
+type Environment struct {
+	store map[string]Object
+}
+
+func (e *Environment) Get(name string) (Object, bool) {
+	obj, ok := e.store[name]
+	return obj, ok
+}
+
+func (e *Environment) Set(name string, val Object) Object {
+	e.store[name] = val
+	return val
+}
