@@ -3,6 +3,7 @@ package main
 import (
 	"farcical/evaluator"
 	"farcical/lexer"
+	"farcical/object"
 	"farcical/parser"
 	"farcical/repl"
 	"flag"
@@ -26,7 +27,8 @@ func main() {
 		l := lexer.New(codeString)
 		p := parser.New(l)
 		program := p.ParseProgram()
-		evaluated := evaluator.Eval(program)
+		env := object.NewEnvironment()
+		evaluated := evaluator.Eval(program, env)
 		io.WriteString(os.Stdout, evaluated.Inspect())
 		io.WriteString(os.Stdout, "\n")
 		return

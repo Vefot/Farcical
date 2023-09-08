@@ -1,5 +1,7 @@
-if (10 < 1) {
-    return true;
+if (10 > 1) {
+    let a = 17;
+    a*12;
 } else {
-    return false;
+    let b = 5;
+    b + 1;
 }
