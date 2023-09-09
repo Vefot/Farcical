@@ -1,7 +1,8 @@
-if (10 > 1) {
-    let a = 17;
-    a*12;
-} else {
-    let b = 5;
-    b + 1;
+let tryThis = fn(thing, wacko) {
+    let result = thing * wacko + 10;
+    return result
 }
+
+let res = tryThis(1, 2);
+
+res
