@@ -22,7 +22,7 @@ REPL Session: main
 ### Example
 
 ```javascript
-let tryThis = fn(foo, bar) {
+let tryThis = function(foo, bar) {
     let result = foo * bar + 10;
     return result
 }

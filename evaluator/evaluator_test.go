@@ -190,7 +190,7 @@ func TestErrorHandling(t *testing.T) {
 			"unknown operator: STRING - STRING",
 		},
 		{
-			`{"name": "Monkey"}[fn(x) { x }];`,
+			`{"name": "Monkey"}[function(x) { x }];`,
 			"unusable as hash key: FUNCTION",
 		},
 	}
@@ -227,7 +227,7 @@ func TestLetStatements(t *testing.T) {
 }
 
 func TestFunctionObject(t *testing.T) {
-	input := "fn(x) { x + 2; };"
+	input := "function(x) { x + 2; };"
 
 	evaluated := testEval(input)
 	fn, ok := evaluated.(*object.Function)
@@ -251,12 +251,12 @@ func TestFunctionApplication(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"let identity = fn(x) { x; }; identity(5);", 5},
-		{"let identity = fn(x) { return x; }; identity(5);", 5},
-		{"let double = fn(x) { x * 2; }; double(5);", 10},
-		{"let add = fn(x, y) { x + y; }; add(5, 5);", 10},
-		{"let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
-		{"fn(x) { x; }(5)", 5},
+		{"let identity = function(x) { x; }; identity(5);", 5},
+		{"let identity = function(x) { return x; }; identity(5);", 5},
+		{"let double = function(x) { x * 2; }; double(5);", 10},
+		{"let add = function(x, y) { x + y; }; add(5, 5);", 10},
+		{"let add = function(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"function(x) { x; }(5)", 5},
 	}
 
 	for _, tt := range tests {
@@ -266,8 +266,8 @@ func TestFunctionApplication(t *testing.T) {
 
 func TestClosures(t *testing.T) {
 	input := `
-	let newAdder = fn(x) {
-		fn(y) { x + y };
+	let newAdder = function(x) {
+		function(y) { x + y };
 	};
 	
 	let addTwo = newAdder(2);
@@ -371,14 +371,14 @@ func TestArrayIndexExpressions(t *testing.T) {
 		// {"[1, 2, 3][false]", nil},
 		// {"[1, 2, 3][null]", nil},
 		// {"[1, 2, 3][\"string\"]", nil},
-		// {"[1, 2, 3][fn(x) { x }]", nil},
+		// {"[1, 2, 3][function(x) { x }]", nil},
 		// {"[1, 2, 3][[1, 2, 3]]", nil},
 		// {"[1, 2, 3][{\"key\": \"value\"}]", nil},
-		// {"[1, 2, 3][fn(x) { x }()]", nil},
-		// {"[1, 2, 3][fn(x) { x }(1)]", nil},
-		// {"[1, 2, 3][fn(x) { x }(1, 2)]", nil},
-		// {"[1, 2, 3][fn(x) { x }(1, 2, 3)]", nil},
-		// {"[1, 2, 3][fn(x) { x }(1, 2, 3, 4)]", nil},
+		// {"[1, 2, 3][function(x) { x }()]", nil},
+		// {"[1, 2, 3][function(x) { x }(1)]", nil},
+		// {"[1, 2, 3][function(x) { x }(1, 2)]", nil},
+		// {"[1, 2, 3][function(x) { x }(1, 2, 3)]", nil},
+		// {"[1, 2, 3][function(x) { x }(1, 2, 3, 4)]", nil},
 	}
 
 	for _, tt := range tests {

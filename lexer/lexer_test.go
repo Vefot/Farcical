@@ -8,7 +8,7 @@ import (
 func TestNextToken(t *testing.T) {
 	input := `let five = 5;
 	let ten = 10;
-	let add = fn(x, y) {
+	let add = function(x, y) {
 		x + y;
 	};
 	let result = add(five, ten);
@@ -26,7 +26,7 @@ func TestNextToken(t *testing.T) {
 	"foobar"
 	"foo bar"
 	[1, 2];
-	{"foo": "bar}
+	{"foo": "bar"}
 	`
 
 	tests := []struct {
@@ -46,7 +46,7 @@ func TestNextToken(t *testing.T) {
 		{token.LET, "let"},
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "function"},
 		{token.LPAREN, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
