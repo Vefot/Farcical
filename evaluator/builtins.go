@@ -98,6 +98,7 @@ var builtins = map[string]*object.Builtin{
 			for _, arg := range args {
 				fmt.Print(arg.Inspect() + " ")
 			}
+			fmt.Println("")
 			return &object.String{Value: ""}
 		},
 	},

@@ -1,8 +1,0 @@
-let tryThis = fn(thing, wacko) {
-    let result = thing * wacko + 10;
-    return result
-}
-
-let res = tryThis(1, 2);
-
-res
