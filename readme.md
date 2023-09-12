@@ -20,7 +20,6 @@ REPL Session: main
 ```
 
 ### Example
-```example.fa```
 
 ```javascript
 let tryThis = fn(foo, bar) {
