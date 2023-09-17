@@ -8,7 +8,9 @@ func TestMake(t *testing.T) {
 		operands []int
 		expected []byte
 	}{
-		{Opconstant, []int{65534}, []byte{byte(Opconstant), 255, 254}}, // check the order of bytes returned - picked 65534 so we could test for big endianism
+		// check the order of bytes returned - picked 65534 so we could test for big endianism
+		// first byte is the opcode, then the encoded operand (so 255 and 254 make 65534 - we can test big endianism since they're different numbers)
+		{Opconstant, []int{65534}, []byte{byte(Opconstant), 255, 254}},
 	}
 
 	for _, tt := range tests {
