@@ -1,6 +1,7 @@
 package code
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
 )
@@ -83,7 +84,7 @@ func Make(op Opcode, operands ...int) []byte {
 		switch width {
 		case 2:
 			// For 2-byte operands, use BigEndian encoding
-			binary.BigEndian.PutUint16(instruction[offset:], uint16(o))
+			binary.BigEndian.PutUint16(instruction[offset:], uint16(o)) // its going to be 2 bytes - so it'll be a 16-bit
 		}
 
 		// Update the offset to the next position for the next operand
@@ -95,7 +96,45 @@ func Make(op Opcode, operands ...int) []byte {
 }
 
 func (ins Instructions) String() string {
-	return ""
+	var out bytes.Buffer
+
+	i := 0
+
+	for i < len(ins) { // while i less than length of instructions (each instruction being opcode+operands)...
+		def, err := Lookup(ins[i])
+		if err != nil {
+			fmt.Fprintf(&out, "ERROR: %s\n", err)
+			continue
+		}
+
+		// send the opcode definition and operands to ReadOperands
+		// get back the decoded operands (from bytes to ints)
+		operands, read := ReadOperands(def, ins[i+1:])
+
+		fmt.Fprintf(&out, "%04d %s\n", i, ins.fmtInstruction(def, operands))
+
+		// we just read more than 1 index
+		// so increase index by 1 (account for opcode) plus number of operands (bytes) read
+		// hence we get back a number that increments like 0001, 0003, 0006...
+		i += 1 + read
+	}
+
+	return out.String()
+}
+
+func (ins Instructions) fmtInstruction(def *Definition, operands []int) string {
+	operandCount := len(def.OperandWidths)
+
+	if len(operands) != operandCount {
+		return fmt.Sprintf("ERROR: operand len %d does not match defined %d", len(operands), operandCount)
+	}
+
+	switch operandCount {
+	case 1:
+		return fmt.Sprintf("%s %d", def.Name, operands[0]) // only one operand...return the opcode name plus operand
+	}
+
+	return fmt.Sprintf("ERROR: unhandled operandCount for %s\n", def.Name)
 }
 
 // decode the operands of a bytecode instruction - opposite of Make in a way
@@ -107,13 +146,16 @@ func ReadOperands(def *Definition, ins Instructions) ([]int, int) {
 	for i, width := range def.OperandWidths {
 		switch width {
 		case 2:
-			operands[i] = int(ReadUint16(ins[offset:]))
+			operands[i] = int(ReadUint16(ins[offset:])) // its going to be 2 bytes - so it'll be a 16-bit
 		}
 		offset += width
 	}
 	return operands, offset
 }
 
+// Public function so that it can be used directly by the VM
+// Allows us to skip the definition lookup required by ReadOperands
+// (book def)
 func ReadUint16(ins Instructions) uint16 {
 	return binary.BigEndian.Uint16(ins)
 }
