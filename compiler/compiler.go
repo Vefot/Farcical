@@ -4,6 +4,7 @@ import (
 	"farcical/ast"
 	"farcical/code"
 	"farcical/object"
+	"fmt"
 )
 
 // Compiler represents the compiler for the Farcical programming language.
@@ -24,7 +25,61 @@ func New() *Compiler {
 // Compile generates bytecode instructions from the provided AST node.
 // It returns an error if the compilation process encounters any issues.
 func (c *Compiler) Compile(node ast.Node) error {
+	switch node := node.(type) {
+	case *ast.Program:
+		for _, s := range node.Statements {
+			err := c.Compile(s)
+			if err != nil {
+				return err
+			}
+		}
+	case *ast.ExpressionStatement:
+		err := c.Compile(node.Expression)
+		if err != nil {
+			return err
+		}
+	case *ast.InfixExpression:
+		err := c.Compile(node.Left)
+		if err != nil {
+			return err
+		}
+
+		err2 := c.Compile(node.Right)
+		if err2 != nil {
+			return err
+		}
+	case *ast.IntegerLiteral:
+		integer := &object.Integer{Value: node.Value}
+		c.emit(code.OpConstant, c.addConstant(integer))
+	}
 	return nil
+}
+
+// Add a constant to the *Compiler's constants slice
+// Returns its index in the slice (NOT the constant itself)
+func (c *Compiler) addConstant(obj object.Object) int {
+	c.constants = append(c.constants, obj) // add the new object to constant pool/slice
+	return len(c.constants) - 1            // return its index in the constants slice
+}
+
+// Makes a bytecode instruction, adds it to the *Compiler's instructions slice,
+// and returns the starting position of the just-emitted instruction (allowing us to go back and modify it later?)
+func (c *Compiler) emit(op code.Opcode, operands ...int) int {
+	ins := code.Make(op, operands...)
+	fmt.Println("emit:")
+	fmt.Println(ins)
+	pos := c.addInstruction(ins)
+	return pos
+}
+
+// Adds a new instruction to the *Compiler's instructions slice
+// Returns the *position* of the instruction in the slice
+func (c *Compiler) addInstruction(ins []byte) int {
+	posNewInstruction := len(c.instructions)
+	c.instructions = append(c.instructions, ins...)
+	fmt.Println("all intructions:")
+	fmt.Println(c.instructions.String())
+	return posNewInstruction
 }
 
 // Bytecode returns the compiled bytecode produced by the Farcical compiler.

@@ -22,8 +22,8 @@ func TestIntegerArithmetic(t *testing.T) {
 			input:             "1 + 2",
 			expectedConstants: []interface{}{1, 2},
 			expectedInstructions: []code.Instructions{
-				code.Make(code.OpConstant, 0),
-				code.Make(code.OpConstant, 1),
+				code.Make(code.OpConstant, 0), // expect a constant stored at index 0
+				code.Make(code.OpConstant, 1), // expect a constant stored at index 1
 			},
 		},
 	}
@@ -77,21 +77,15 @@ func testInstructions(expected []code.Instructions, actual code.Instructions) er
 // Basically this flattens the slice of slices into a slice
 func concatInstructions(s []code.Instructions) code.Instructions {
 	out := code.Instructions{}
-
-	fmt.Println("Instruction:")
-	fmt.Println(s)
 	// the String method will implicitly be called
 	// since string method includes ReadOperands method, which
 	// returns number of bytes read, we should see the numbers incrementing like so:
 	// 0000, 0003, 0006, etc, depending on num bytes read...
 
 	for _, ins := range s {
-		fmt.Println("Instruction element:")
-		fmt.Printf("%q\n", ins)
 		out = append(out, ins...)
 	}
 
-	fmt.Printf("Outputting from concat instructions:\n%s", out)
 	return out
 }
 
