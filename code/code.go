@@ -10,7 +10,7 @@ type Instructions []byte
 type Opcode byte
 
 const (
-	Opconstant Opcode = iota
+	OpConstant Opcode = iota
 )
 
 // Definition is a data structure representing the characteristics of an opcode,
@@ -23,7 +23,7 @@ type Definition struct {
 // The Key is the opcode, and the Value is the Definition.
 // They key/opcode is a number represented as a byte, defined as a constant.
 var definitions = map[Opcode]*Definition{
-	Opconstant: {"OpConstant", []int{2}},
+	OpConstant: {"OpConstant", []int{2}},
 }
 
 // Retrieves the definition of an opcode based on its byte representation.
@@ -92,4 +92,28 @@ func Make(op Opcode, operands ...int) []byte {
 
 	// Return the constructed instruction
 	return instruction
+}
+
+func (ins Instructions) String() string {
+	return ""
+}
+
+// decode the operands of a bytecode instruction - opposite of Make in a way
+func ReadOperands(def *Definition, ins Instructions) ([]int, int) {
+	operands := make([]int, len(def.OperandWidths)) // use the definition to find the operand width ie how many bytes it expects - create a slice with the right amount of space to hold them
+	offset := 0
+
+	// for every byte in the num of expected bytes, read the instruction and add it to the list/slice ("operands")
+	for i, width := range def.OperandWidths {
+		switch width {
+		case 2:
+			operands[i] = int(ReadUint16(ins[offset:]))
+		}
+		offset += width
+	}
+	return operands, offset
+}
+
+func ReadUint16(ins Instructions) uint16 {
+	return binary.BigEndian.Uint16(ins)
 }
