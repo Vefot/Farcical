@@ -78,9 +78,20 @@ func testInstructions(expected []code.Instructions, actual code.Instructions) er
 func concatInstructions(s []code.Instructions) code.Instructions {
 	out := code.Instructions{}
 
+	fmt.Println("Instruction:")
+	fmt.Println(s)
+	// the String method will implicitly be called
+	// since string method includes ReadOperands method, which
+	// returns number of bytes read, we should see the numbers incrementing like so:
+	// 0000, 0003, 0006, etc, depending on num bytes read...
+
 	for _, ins := range s {
+		fmt.Println("Instruction element:")
+		fmt.Printf("%q\n", ins)
 		out = append(out, ins...)
 	}
+
+	fmt.Printf("Outputting from concat instructions:\n%s", out)
 	return out
 }
 

@@ -111,7 +111,7 @@ func (ins Instructions) String() string {
 		// get back the decoded operands (from bytes to ints)
 		operands, read := ReadOperands(def, ins[i+1:])
 
-		fmt.Fprintf(&out, "%04d %s\n", i, ins.fmtInstruction(def, operands))
+		fmt.Fprintf(&out, "%04d %s\n", i, ins.fmtInstruction(def, operands)) // pad the index with 4 digits (000n)
 
 		// we just read more than 1 index
 		// so increase index by 1 (account for opcode) plus number of operands (bytes) read
@@ -131,7 +131,7 @@ func (ins Instructions) fmtInstruction(def *Definition, operands []int) string {
 
 	switch operandCount {
 	case 1:
-		return fmt.Sprintf("%s %d", def.Name, operands[0]) // only one operand...return the opcode name plus operand
+		return fmt.Sprintf("%s %d", def.Name, operands[0]) // only one operand???...return the opcode name plus operand
 	}
 
 	return fmt.Sprintf("ERROR: unhandled operandCount for %s\n", def.Name)
