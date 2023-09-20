@@ -11,6 +11,7 @@ func TestMake(t *testing.T) {
 		// check the order of bytes returned - picked 65534 so we could test for big endianism
 		// first byte is the opcode, then the encoded operand (so 255 and 254 make 65534 - we can test big endianism since they're different numbers)
 		{OpConstant, []int{65534}, []byte{byte(OpConstant), 255, 254}},
+		{OpAdd, []int{}, []byte{byte(OpAdd)}},
 	}
 
 	for _, tt := range tests {
@@ -30,14 +31,14 @@ func TestMake(t *testing.T) {
 
 func TestInstructionsString(t *testing.T) {
 	instructions := []Instructions{
-		Make(OpConstant, 1),
+		Make(OpAdd),
 		Make(OpConstant, 2),
 		Make(OpConstant, 65535),
 	}
 
-	expected := `0000 OpConstant 1
-0003 OpConstant 2
-0006 OpConstant 65535
+	expected := `0000 OpAdd
+0001 OpConstant 2
+0004 OpConstant 65535
 `
 
 	concatted := Instructions{}

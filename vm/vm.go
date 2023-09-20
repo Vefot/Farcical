@@ -46,9 +46,11 @@ func (vm *VM) StackTop() object.Object {
 // turn the byte into an opcode - NOT using code.Lookup as that is too slow (it
 // costs time to move the byte around)
 func (vm *VM) Run() error {
-	// fetch
+	// FETCH
 	for ip := 0; ip < len(vm.instructions); ip++ {
 		op := code.Opcode(vm.instructions[ip])
+
+		// DECODE
 		switch op {
 		case code.OpConstant:
 			// decode the bytes AFTER the opcode (the operands) - not using code.ReadOperands for the same reasons as Lookup
@@ -57,10 +59,22 @@ func (vm *VM) Run() error {
 			ip += 2                                               // careful to increment ip by correct amount - next iteration must be pointing at an opcode not an operand
 
 			// Uses constIndex to get to the constant in vm.constants and push it to the stack
+			// I think what happens is: if we get an OpConstant opcode, read the instruction which gives us the index in the bytecod
+			// constants slice of where the constant's value is stored. Then push it to the vm constants slice.
 			err := vm.push(vm.constants[constIndex])
 			if err != nil {
 				return err
 			}
+		case code.OpAdd:
+			// EXECUTE
+			// take the top two elements from the stack, pop them off it, extract their values, add them, push the result to the stack
+			right := vm.pop()
+			left := vm.pop()
+			leftValue := left.(*object.Integer).Value
+			rightValue := right.(*object.Integer).Value
+
+			result := leftValue + rightValue
+			vm.push(&object.Integer{Value: result})
 		}
 	}
 	return nil
@@ -75,4 +89,14 @@ func (vm *VM) push(o object.Object) error {
 	vm.stack[vm.sp] = o
 	vm.sp++
 	return nil
+}
+
+// Pop the top element of the stack off
+// Take the element from the top of the stack and put it to the side, then decrement sp
+// This allows the location of the element that was just popped off to be overwritten
+// eventually
+func (vm *VM) pop() object.Object {
+	o := vm.stack[vm.sp-1]
+	vm.sp--
+	return o
 }

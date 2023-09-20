@@ -12,6 +12,7 @@ type Opcode byte
 
 const (
 	OpConstant Opcode = iota
+	OpAdd
 )
 
 // Definition is a data structure representing the characteristics of an opcode,
@@ -25,6 +26,7 @@ type Definition struct {
 // They key/opcode is a number represented as a byte, defined as a constant.
 var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}}, // the VM uses the operand as an index and pushes it onto the stack
+	OpAdd:      {"OpAdd", []int{}},       // no operands
 }
 
 // Retrieves the definition of an opcode based on its byte representation.
@@ -130,6 +132,8 @@ func (ins Instructions) fmtInstruction(def *Definition, operands []int) string {
 	}
 
 	switch operandCount {
+	case 0:
+		return def.Name
 	case 1:
 		return fmt.Sprintf("%s %d", def.Name, operands[0]) // only one operand???...return the opcode name plus operand
 	}
