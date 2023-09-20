@@ -24,7 +24,7 @@ type Definition struct {
 // The Key is the opcode, and the Value is the Definition.
 // They key/opcode is a number represented as a byte, defined as a constant.
 var definitions = map[Opcode]*Definition{
-	OpConstant: {"OpConstant", []int{2}},
+	OpConstant: {"OpConstant", []int{2}}, // the VM uses the operand as an index and pushes it onto the stack
 }
 
 // Retrieves the definition of an opcode based on its byte representation.
@@ -156,6 +156,7 @@ func ReadOperands(def *Definition, ins Instructions) ([]int, int) {
 // Public function so that it can be used directly by the VM
 // Allows us to skip the definition lookup required by ReadOperands
 // (book def)
+// Takes an Instructions (slice of bytes) and returns it as a uint16 integer
 func ReadUint16(ins Instructions) uint16 {
 	return binary.BigEndian.Uint16(ins)
 }
