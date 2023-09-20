@@ -51,9 +51,12 @@ func (vm *VM) Run() error {
 		op := code.Opcode(vm.instructions[ip])
 		switch op {
 		case code.OpConstant:
-			constIndex := code.ReadUint16(vm.instructions[ip+1:]) // decode the bytes AFTER the opcode (the operands) - not using code.ReadOperands for the same reasons as Lookup
+			// decode the bytes AFTER the opcode (the operands) - not using code.ReadOperands for the same reasons as Lookup
+			// gues since its a uint16 (2 bytes) it knows to only read 2?
+			constIndex := code.ReadUint16(vm.instructions[ip+1:]) // still not sure what's going on here - we're reading an index? so where is the value?
 			ip += 2                                               // careful to increment ip by correct amount - next iteration must be pointing at an opcode not an operand
 
+			// Uses constIndex to get to the constant in vm.constants and push it to the stack
 			err := vm.push(vm.constants[constIndex])
 			if err != nil {
 				return err
@@ -64,7 +67,6 @@ func (vm *VM) Run() error {
 }
 
 // Pushes the object to the top of the stack
-// Use constIndex 
 func (vm *VM) push(o object.Object) error {
 	if vm.sp >= StackSize {
 		return fmt.Errorf("stack overflow") // woop woop

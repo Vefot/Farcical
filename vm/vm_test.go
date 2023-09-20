@@ -60,6 +60,7 @@ func testExpectedObject(t *testing.T, expected interface{}, actual object.Object
 		if err != nil {
 			t.Errorf("testIntegerObject failed: %s", err)
 		}
+		fmt.Printf("VM tests: expected %d at top of stack - got %s\n\n", expected, actual.Inspect())
 	}
 }
 

@@ -57,10 +57,10 @@ func (c *Compiler) Compile(node ast.Node) error {
 // Add a constant to the *Compiler's constants slice
 // Returns its index in the slice (NOT the constant itself)
 func (c *Compiler) addConstant(obj object.Object) int {
-	fmt.Printf("Add value to constants: %+v\n", obj.Inspect())
+	fmt.Printf("Compiler: Add value to constants: %+v\n", obj.Inspect())
 	c.constants = append(c.constants, obj) // add the new object to constant pool/slice
 
-	fmt.Printf("At pos/index: %d\n", len(c.constants)-1)
+	fmt.Printf("Compiler: At pos/index: %d\n", len(c.constants)-1)
 	return len(c.constants) - 1 // return its index in the constants slice
 }
 
