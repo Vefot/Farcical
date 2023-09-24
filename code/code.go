@@ -14,6 +14,9 @@ const (
 	OpConstant Opcode = iota
 	OpAdd
 	OpPop
+	OpSub
+	OpMul
+	OpDiv
 )
 
 // Definition is a data structure representing the characteristics of an opcode,
@@ -28,7 +31,10 @@ type Definition struct {
 var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}}, // the VM uses the operand as an index and pushes it onto the stack
 	OpAdd:      {"OpAdd", []int{}},       // no operands
-	OpPop:      {"OpPop", []int{}},       // tell the VM to pop the topmost element off the stack
+	OpSub:      {"OpSub", []int{}},
+	OpMul:      {"OpMul", []int{}},
+	OpDiv:      {"OpDiv", []int{}},
+	OpPop:      {"OpPop", []int{}}, // tell the VM to pop the topmost element off the stack
 }
 
 // Retrieves the definition of an opcode based on its byte representation.

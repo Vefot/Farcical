@@ -65,16 +65,21 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
-		case code.OpAdd:
-			// EXECUTE
-			// take the top two elements from the stack, pop them off it, extract their values, add them, push the result to the stack
-			right := vm.pop()
-			left := vm.pop()
-			leftValue := left.(*object.Integer).Value
-			rightValue := right.(*object.Integer).Value
+		// case code.OpAdd:
+		// 	// EXECUTE
+		// 	// take the top two elements from the stack, pop them off it, extract their values, add them, push the result to the stack
+		// 	right := vm.pop()
+		// 	left := vm.pop()
+		// 	leftValue := left.(*object.Integer).Value
+		// 	rightValue := right.(*object.Integer).Value
 
-			result := leftValue + rightValue
-			vm.push(&object.Integer{Value: result})
+		// 	result := leftValue + rightValue
+		// 	vm.push(&object.Integer{Value: result})
+		case code.OpAdd, code.OpSub, code.OpMul, code.OpDiv:
+			err := vm.executeBinaryOperation(op)
+			if err != nil {
+				return err
+			}
 		case code.OpPop:
 			vm.pop()
 		}
@@ -109,4 +114,45 @@ func (vm *VM) pop() object.Object {
 	o := vm.stack[vm.sp-1]
 	vm.sp--
 	return o
+}
+
+// Take the top 2 elements of the stack and the opcode (op). Assert they are both integer,
+// and if so, pass them to executeBinaryOperation with the op required (opcode, ie add, subtract, etc)
+func (vm *VM) executeBinaryOperation(op code.Opcode) error {
+	right := vm.pop()
+	left := vm.pop()
+
+	leftType := left.Type()
+	rightType := right.Type()
+
+	if leftType == object.INTEGER_OBJ && rightType == object.INTEGER_OBJ {
+		return vm.executeBinaryIntegerOperation(op, left, right)
+	}
+
+	return fmt.Errorf("unsupported type for binary operation: %s %s", leftType, rightType)
+}
+
+// Performs arithmetic operation on left and right as determiend by op (the opcode ie OpAdd),
+// pushes the result to the top of the stack
+func (vm *VM) executeBinaryIntegerOperation(op code.Opcode, left, right object.Object) error {
+	leftValue := left.(*object.Integer).Value
+	rightValue := right.(*object.Integer).Value
+
+	var result int64
+
+	switch op {
+	case code.OpAdd:
+		result = leftValue + rightValue
+	case code.OpSub:
+		result = leftValue - rightValue
+	case code.OpMul:
+		result = leftValue * rightValue
+	case code.OpDiv:
+		result = leftValue / rightValue
+	default:
+		return fmt.Errorf("unknown integer operator: %d", op)
+	}
+
+	return vm.push(&object.Integer{Value: result})
+
 }
