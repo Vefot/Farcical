@@ -19,6 +19,9 @@ const (
 	OpDiv
 	OpTrue
 	OpFalse
+	OpEqual
+	OpNotEqual
+	OpGreaterThan // dont need OpLessThan because we can reorder code in the compiler - 3 < 5 can be made 5 > 3. Helps keep  instruction set small and loop of the VM tighter
 )
 
 // Definition is a data structure representing the characteristics of an opcode,
@@ -31,14 +34,17 @@ type Definition struct {
 // The Key is the opcode, and the Value is the Definition.
 // They key/opcode is a number represented as a byte, defined as a constant.
 var definitions = map[Opcode]*Definition{
-	OpConstant: {"OpConstant", []int{2}}, // the VM uses the operand as an index and pushes it onto the stack
-	OpAdd:      {"OpAdd", []int{}},       // no operands
-	OpSub:      {"OpSub", []int{}},
-	OpMul:      {"OpMul", []int{}},
-	OpDiv:      {"OpDiv", []int{}},
-	OpPop:      {"OpPop", []int{}}, // tell the VM to pop the topmost element off the stack
-	OpTrue:     {"OpTrue", []int{}},
-	OpFalse:    {"OpFalse", []int{}},
+	OpConstant:    {"OpConstant", []int{2}}, // the VM uses the operand as an index and pushes it onto the stack
+	OpAdd:         {"OpAdd", []int{}},       // no operands
+	OpSub:         {"OpSub", []int{}},
+	OpMul:         {"OpMul", []int{}},
+	OpDiv:         {"OpDiv", []int{}},
+	OpPop:         {"OpPop", []int{}}, // tell the VM to pop the topmost element off the stack
+	OpTrue:        {"OpTrue", []int{}},
+	OpFalse:       {"OpFalse", []int{}},
+	OpEqual:       {"OpEqual", []int{}},
+	OpNotEqual:    {"OpNotEqual", []int{}},
+	OpGreaterThan: {"OpGreaterThan", []int{}},
 }
 
 // Retrieves the definition of an opcode based on its byte representation.

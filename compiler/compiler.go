@@ -39,6 +39,19 @@ func (c *Compiler) Compile(node ast.Node) error {
 		}
 		c.emit(code.OpPop) // clean the stack by popping the top element off - make sure it doesn't overflow
 	case *ast.InfixExpression:
+		if node.Operator == "<" {
+			// < is special case - turn the order around and first compile node.Right, then emit code.OpGreaterThan (">")
+			err := c.Compile(node.Right)
+			if err != nil {
+				return err
+			}
+			err2 := c.Compile(node.Left)
+			if err2 != nil {
+				return err
+			}
+			c.emit(code.OpGreaterThan)
+			return nil
+		}
 		err := c.Compile(node.Left)
 		if err != nil {
 			return err
@@ -57,6 +70,12 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.emit(code.OpMul)
 		case "/":
 			c.emit(code.OpDiv)
+		case ">":
+			c.emit(code.OpGreaterThan)
+		case "==":
+			c.emit(code.OpEqual)
+		case "!=":
+			c.emit(code.OpNotEqual)
 		default:
 			return fmt.Errorf("unknown operator %s", node.Operator)
 		}
