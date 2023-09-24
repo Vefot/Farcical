@@ -37,6 +37,7 @@ func (c *Compiler) Compile(node ast.Node) error {
 		if err != nil {
 			return err
 		}
+		c.emit(code.OpPop) // clean the stack by popping the top element off - make sure it doesn't overflow
 	case *ast.InfixExpression:
 		err := c.Compile(node.Left)
 		if err != nil {
