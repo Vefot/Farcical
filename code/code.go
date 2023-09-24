@@ -22,6 +22,8 @@ const (
 	OpEqual
 	OpNotEqual
 	OpGreaterThan // dont need OpLessThan because we can reorder code in the compiler - 3 < 5 can be made 5 > 3. Helps keep  instruction set small and loop of the VM tighter
+	OpMinus
+	OpBang
 )
 
 // Definition is a data structure representing the characteristics of an opcode,
@@ -45,6 +47,8 @@ var definitions = map[Opcode]*Definition{
 	OpEqual:       {"OpEqual", []int{}},
 	OpNotEqual:    {"OpNotEqual", []int{}},
 	OpGreaterThan: {"OpGreaterThan", []int{}},
+	OpMinus:       {"OpMinus", []int{}},
+	OpBang:        {"OpBang", []int{}},
 }
 
 // Retrieves the definition of an opcode based on its byte representation.
